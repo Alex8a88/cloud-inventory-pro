@@ -1,0 +1,23 @@
+# Java / Maven
+backend/target/
+*.class
+*.jar
+*.war
+
+# Spring Boot
+backend/src/main/resources/application-local.properties
+
+# Node / React
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+
+# VS Code
+.vscode/
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
