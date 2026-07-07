@@ -1,0 +1,88 @@
+.page { max-width: 1000px; }
+
+.header { margin-bottom: 32px; }
+.title { font-size: 28px; font-weight: 700; color: #1e3a5f; margin-bottom: 4px; }
+.subtitle { color: #888; font-size: 14px; }
+.loading { text-align: center; padding: 40px; color: #888; }
+
+.resumenCards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-bottom: 32px;
+}
+
+.card {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  border-left: 4px solid #2d6a9f;
+}
+
+.cardWarning { border-left-color: #f59e0b; }
+.cardDanger { border-left-color: #ef4444; }
+
+.cardIcon { font-size: 32px; }
+.cardValue { font-size: 28px; font-weight: 700; color: #1e3a5f; }
+.cardLabel { font-size: 13px; color: #888; }
+
+.empty {
+  background: white;
+  border-radius: 12px;
+  padding: 60px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.emptyIcon { font-size: 48px; display: block; margin-bottom: 16px; }
+.emptyText { color: #555; font-size: 16px; }
+
+.tableContainer {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  overflow: hidden;
+}
+
+.table { width: 100%; border-collapse: collapse; }
+
+.table th {
+  background: #f8f9fa;
+  padding: 14px 20px;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 600;
+  color: #555;
+  border-bottom: 1px solid #eee;
+}
+
+.table td {
+  padding: 14px 20px;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 14px;
+  color: #333;
+}
+
+.table tr:last-child td { border-bottom: none; }
+.table tr:hover td { background: #fafafa; }
+
+.productoNombre { font-weight: 600; color: #1e3a5f; }
+.stockCero { color: #c62828; font-weight: 700; }
+.stockBajo { color: #f57f17; font-weight: 700; }
+.faltantes { color: #555; font-weight: 600; }
+
+.badgeWarning {
+  background: #fff8e1; color: #f57f17;
+  padding: 4px 10px; border-radius: 20px;
+  font-size: 12px; font-weight: 600;
+}
+
+.badgeDanger {
+  background: #ffebee; color: #c62828;
+  padding: 4px 10px; border-radius: 20px;
+  font-size: 12px; font-weight: 600;
+}
