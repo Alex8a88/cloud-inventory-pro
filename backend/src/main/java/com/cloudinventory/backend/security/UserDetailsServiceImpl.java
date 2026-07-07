@@ -10,12 +10,15 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
+    private static final String ADMIN_PASSWORD =
+        new BCryptPasswordEncoder().encode("admin123");
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         if ("admin".equals(username)) {
             return User.builder()
                     .username("admin")
-                    .password(new BCryptPasswordEncoder().encode("admin123"))
+                    .password(ADMIN_PASSWORD)
                     .roles("ADMIN")
                     .build();
         }
