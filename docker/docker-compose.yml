@@ -1,0 +1,111 @@
+# ============================================================
+# Cloud Inventory Pro - Docker Compose
+# Levanta todos los servicios del sistema
+# Uso: docker compose up --build
+# ============================================================
+
+services:
+
+  # ============================================================
+  # Base de datos MySQL
+  # ============================================================
+  mysql:
+    image: mysql:8.0
+    container_name: cloud-inventory-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root1234
+      MYSQL_DATABASE: cloud_inventory_pro
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ../database/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    networks:
+      - cloud-inventory-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot1234"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ============================================================
+  # Backend Spring Boot
+  # ============================================================
+  backend:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+    container_name: cloud-inventory-backend
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/cloud_inventory_pro?useSSL=false&serverTimezone=America/Mexico_City&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root1234
+      JWT_SECRET: c2VjcmV0S2V5Q2xvdWRJbnZlbnRvcnlQcm9TZWNyZXRLZXkyMDI2
+      JWT_EXPIRATION: 86400000
+    ports:
+      - "8080:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - cloud-inventory-network
+
+  # ============================================================
+  # Frontend React + Nginx
+  # ============================================================
+  frontend:
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
+    container_name: cloud-inventory-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - cloud-inventory-network
+
+  # ============================================================
+  # Prometheus - Recolección de métricas
+  # ============================================================
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: cloud-inventory-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ../monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - cloud-inventory-network
+
+  # ============================================================
+  # Grafana - Visualización de métricas
+  # ============================================================
+  grafana:
+    image: grafana/grafana:latest
+    container_name: cloud-inventory-grafana
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: admin123
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ../monitoring/grafana/provisioning:/etc/grafana/provisioning
+    depends_on:
+      - prometheus
+    networks:
+      - cloud-inventory-network
+
+# ============================================================
+# Volúmenes persistentes
+# ============================================================
+volumes:
+  mysql_data:
+  grafana_data:
+
+# ============================================================
+# Red interna del sistema
+# ============================================================
+networks:
+  cloud-inventory-network:
+    driver: bridge

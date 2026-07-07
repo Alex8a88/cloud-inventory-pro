@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8080/api';
+// En Docker usa el nombre del servicio, en desarrollo usa localhost
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080/api';
 
 const axiosClient = axios.create({
   baseURL: API_URL,
