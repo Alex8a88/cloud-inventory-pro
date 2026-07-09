@@ -1,0 +1,92 @@
+{
+  "title": "Cloud Inventory Pro - Backend Monitoring",
+  "uid": "cloud-inventory-backend",
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "10s",
+  "time": { "from": "now-1h", "to": "now" },
+  "panels": [
+    {
+      "id": 1,
+      "title": "Estado del servicio",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 0 },
+      "targets": [
+        { "expr": "up{job=\"cloud-inventory-backend\"}", "legendFormat": "backend" }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [
+            { "type": "value", "options": { "0": { "text": "DOWN", "color": "red" } } },
+            { "type": "value", "options": { "1": { "text": "UP", "color": "green" } } }
+          ]
+        }
+      }
+    },
+    {
+      "id": 2,
+      "title": "Uso de memoria JVM (heap)",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 6, "y": 0 },
+      "targets": [
+        {
+          "expr": "jvm_memory_used_bytes{area=\"heap\", job=\"cloud-inventory-backend\"}",
+          "legendFormat": "{{id}}"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Requests HTTP por segundo",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 4 },
+      "targets": [
+        {
+          "expr": "rate(http_server_requests_seconds_count{job=\"cloud-inventory-backend\"}[1m])",
+          "legendFormat": "{{uri}} - {{status}}"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Tiempo de respuesta promedio (p95)",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 8 },
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, sum(rate(http_server_requests_seconds_bucket{job=\"cloud-inventory-backend\"}[5m])) by (le, uri))",
+          "legendFormat": "{{uri}}"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Conexiones activas a la base de datos (HikariCP)",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 12 },
+      "targets": [
+        {
+          "expr": "hikaricp_connections_active{job=\"cloud-inventory-backend\"}",
+          "legendFormat": "activas"
+        },
+        {
+          "expr": "hikaricp_connections_idle{job=\"cloud-inventory-backend\"}",
+          "legendFormat": "inactivas"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "title": "Uptime del backend",
+      "type": "stat",
+      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 20 },
+      "targets": [
+        { "expr": "process_uptime_seconds{job=\"cloud-inventory-backend\"}" }
+      ],
+      "fieldConfig": {
+        "defaults": { "unit": "s" }
+      }
+    }
+  ]
+}
